@@ -1,0 +1,4 @@
+robot/ur5/ur5_description
+/root/catkin_ws/devel/.private/ur5_description/share/ur5_description/cmake/ur5_descriptionConfig-version.cmake /root/catkin_ws/devel/share/ur5_description/cmake/ur5_descriptionConfig-version.cmake
+/root/catkin_ws/devel/.private/ur5_description/share/ur5_description/cmake/ur5_descriptionConfig.cmake /root/catkin_ws/devel/share/ur5_description/cmake/ur5_descriptionConfig.cmake
+/root/catkin_ws/devel/.private/ur5_description/lib/pkgconfig/ur5_description.pc /root/catkin_ws/devel/lib/pkgconfig/ur5_description.pc

@@ -1,0 +1,8 @@
+robot/universal_robot/ur_kinematics
+/root/catkin_ws/devel/.private/ur_kinematics/share/ur_kinematics/cmake/ur_kinematicsConfig-version.cmake /root/catkin_ws/devel/share/ur_kinematics/cmake/ur_kinematicsConfig-version.cmake
+/root/catkin_ws/devel/.private/ur_kinematics/share/ur_kinematics/cmake/ur_kinematicsConfig.cmake /root/catkin_ws/devel/share/ur_kinematics/cmake/ur_kinematicsConfig.cmake
+/root/catkin_ws/devel/.private/ur_kinematics/lib/libur3_kin.so /root/catkin_ws/devel/lib/libur3_kin.so
+/root/catkin_ws/devel/.private/ur_kinematics/lib/libur10_kin.so /root/catkin_ws/devel/lib/libur10_kin.so
+/root/catkin_ws/devel/.private/ur_kinematics/lib/libur5_kin.so /root/catkin_ws/devel/lib/libur5_kin.so
+/root/catkin_ws/devel/.private/ur_kinematics/lib/pkgconfig/ur_kinematics.pc /root/catkin_ws/devel/lib/pkgconfig/ur_kinematics.pc
+/root/catkin_ws/devel/.private/ur_kinematics/lib/python3/dist-packages/ur_kinematics/__init__.py /root/catkin_ws/devel/lib/python3/dist-packages/ur_kinematics/__init__.py

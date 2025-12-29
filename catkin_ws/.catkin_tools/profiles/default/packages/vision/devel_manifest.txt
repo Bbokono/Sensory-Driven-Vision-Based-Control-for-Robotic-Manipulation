@@ -1,0 +1,8 @@
+vision
+/root/catkin_ws/devel/.private/vision/share/vision/cmake/vision-msg-paths.cmake /root/catkin_ws/devel/share/vision/cmake/vision-msg-paths.cmake
+/root/catkin_ws/devel/.private/vision/share/vision/cmake/visionConfig.cmake /root/catkin_ws/devel/share/vision/cmake/visionConfig.cmake
+/root/catkin_ws/devel/.private/vision/share/vision/cmake/vision-msg-extras.cmake /root/catkin_ws/devel/share/vision/cmake/vision-msg-extras.cmake
+/root/catkin_ws/devel/.private/vision/share/vision/cmake/visionConfig-version.cmake /root/catkin_ws/devel/share/vision/cmake/visionConfig-version.cmake
+/root/catkin_ws/devel/.private/vision/share/roseus/ros/vision/manifest.l /root/catkin_ws/devel/share/roseus/ros/vision/manifest.l
+/root/catkin_ws/devel/.private/vision/lib/pkgconfig/vision.pc /root/catkin_ws/devel/lib/pkgconfig/vision.pc
+/root/catkin_ws/devel/.private/vision/lib/python3/dist-packages/vision/__init__.py /root/catkin_ws/devel/lib/python3/dist-packages/vision/__init__.py

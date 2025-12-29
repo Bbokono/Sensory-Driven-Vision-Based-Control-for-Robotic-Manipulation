@@ -1,0 +1,4 @@
+robot/universal_robot/ur_bringup
+/root/catkin_ws/devel/.private/ur_bringup/share/ur_bringup/cmake/ur_bringupConfig.cmake /root/catkin_ws/devel/share/ur_bringup/cmake/ur_bringupConfig.cmake
+/root/catkin_ws/devel/.private/ur_bringup/share/ur_bringup/cmake/ur_bringupConfig-version.cmake /root/catkin_ws/devel/share/ur_bringup/cmake/ur_bringupConfig-version.cmake
+/root/catkin_ws/devel/.private/ur_bringup/lib/pkgconfig/ur_bringup.pc /root/catkin_ws/devel/lib/pkgconfig/ur_bringup.pc

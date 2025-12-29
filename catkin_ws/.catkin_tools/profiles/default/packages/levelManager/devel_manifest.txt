@@ -1,0 +1,6 @@
+levelManager
+/root/catkin_ws/devel/.private/levelManager/share/levelManager/cmake/levelManagerConfig-version.cmake /root/catkin_ws/devel/share/levelManager/cmake/levelManagerConfig-version.cmake
+/root/catkin_ws/devel/.private/levelManager/share/levelManager/cmake/levelManagerConfig.cmake /root/catkin_ws/devel/share/levelManager/cmake/levelManagerConfig.cmake
+/root/catkin_ws/devel/.private/levelManager/lib/levelManager/levelManager.py /root/catkin_ws/devel/lib/levelManager/levelManager.py
+/root/catkin_ws/devel/.private/levelManager/lib/levelManager/costruzioniParser.py /root/catkin_ws/devel/lib/levelManager/costruzioniParser.py
+/root/catkin_ws/devel/.private/levelManager/lib/pkgconfig/levelManager.pc /root/catkin_ws/devel/lib/pkgconfig/levelManager.pc

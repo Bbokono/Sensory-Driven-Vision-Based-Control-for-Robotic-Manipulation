@@ -1,0 +1,4 @@
+robot/robotName_description
+/root/catkin_ws/devel/.private/robotName_description/share/robotName_description/cmake/robotName_descriptionConfig-version.cmake /root/catkin_ws/devel/share/robotName_description/cmake/robotName_descriptionConfig-version.cmake
+/root/catkin_ws/devel/.private/robotName_description/share/robotName_description/cmake/robotName_descriptionConfig.cmake /root/catkin_ws/devel/share/robotName_description/cmake/robotName_descriptionConfig.cmake
+/root/catkin_ws/devel/.private/robotName_description/lib/pkgconfig/robotName_description.pc /root/catkin_ws/devel/lib/pkgconfig/robotName_description.pc

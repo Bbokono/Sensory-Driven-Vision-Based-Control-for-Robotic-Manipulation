@@ -1,0 +1,4 @@
+robot/robotiq/robotiq_description
+/root/catkin_ws/devel/.private/robotiq_description/share/robotiq_description/cmake/robotiq_descriptionConfig.cmake /root/catkin_ws/devel/share/robotiq_description/cmake/robotiq_descriptionConfig.cmake
+/root/catkin_ws/devel/.private/robotiq_description/share/robotiq_description/cmake/robotiq_descriptionConfig-version.cmake /root/catkin_ws/devel/share/robotiq_description/cmake/robotiq_descriptionConfig-version.cmake
+/root/catkin_ws/devel/.private/robotiq_description/lib/pkgconfig/robotiq_description.pc /root/catkin_ws/devel/lib/pkgconfig/robotiq_description.pc

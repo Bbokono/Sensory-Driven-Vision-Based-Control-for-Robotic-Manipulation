@@ -1,0 +1,4 @@
+robot/ur5/ur5_gazebo
+/root/catkin_ws/devel/.private/ur5_gazebo/share/ur5_gazebo/cmake/ur5_gazeboConfig.cmake /root/catkin_ws/devel/share/ur5_gazebo/cmake/ur5_gazeboConfig.cmake
+/root/catkin_ws/devel/.private/ur5_gazebo/share/ur5_gazebo/cmake/ur5_gazeboConfig-version.cmake /root/catkin_ws/devel/share/ur5_gazebo/cmake/ur5_gazeboConfig-version.cmake
+/root/catkin_ws/devel/.private/ur5_gazebo/lib/pkgconfig/ur5_gazebo.pc /root/catkin_ws/devel/lib/pkgconfig/ur5_gazebo.pc

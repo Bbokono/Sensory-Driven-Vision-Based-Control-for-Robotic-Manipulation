@@ -1,0 +1,11 @@
+robot/universal_robot/ur_driver
+/root/catkin_ws/devel/.private/ur_driver/share/ur_driver/docs/URDriverConfig-usage.dox /root/catkin_ws/devel/share/ur_driver/docs/URDriverConfig-usage.dox
+/root/catkin_ws/devel/.private/ur_driver/share/ur_driver/docs/URDriverConfig.wikidoc /root/catkin_ws/devel/share/ur_driver/docs/URDriverConfig.wikidoc
+/root/catkin_ws/devel/.private/ur_driver/share/ur_driver/docs/URDriverConfig.dox /root/catkin_ws/devel/share/ur_driver/docs/URDriverConfig.dox
+/root/catkin_ws/devel/.private/ur_driver/share/ur_driver/cmake/ur_driverConfig-version.cmake /root/catkin_ws/devel/share/ur_driver/cmake/ur_driverConfig-version.cmake
+/root/catkin_ws/devel/.private/ur_driver/share/ur_driver/cmake/ur_driverConfig.cmake /root/catkin_ws/devel/share/ur_driver/cmake/ur_driverConfig.cmake
+/root/catkin_ws/devel/.private/ur_driver/include/ur_driver/URDriverConfig.h /root/catkin_ws/devel/include/ur_driver/URDriverConfig.h
+/root/catkin_ws/devel/.private/ur_driver/lib/pkgconfig/ur_driver.pc /root/catkin_ws/devel/lib/pkgconfig/ur_driver.pc
+/root/catkin_ws/devel/.private/ur_driver/lib/python3/dist-packages/ur_driver/__init__.py /root/catkin_ws/devel/lib/python3/dist-packages/ur_driver/__init__.py
+/root/catkin_ws/devel/.private/ur_driver/lib/python3/dist-packages/ur_driver/cfg/__init__.py /root/catkin_ws/devel/lib/python3/dist-packages/ur_driver/cfg/__init__.py
+/root/catkin_ws/devel/.private/ur_driver/lib/python3/dist-packages/ur_driver/cfg/URDriverConfig.py /root/catkin_ws/devel/lib/python3/dist-packages/ur_driver/cfg/URDriverConfig.py

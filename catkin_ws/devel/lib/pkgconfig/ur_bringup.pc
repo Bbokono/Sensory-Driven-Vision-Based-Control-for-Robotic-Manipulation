@@ -1,0 +1,1 @@
+/root/catkin_ws/devel/.private/ur_bringup/lib/pkgconfig/ur_bringup.pc
