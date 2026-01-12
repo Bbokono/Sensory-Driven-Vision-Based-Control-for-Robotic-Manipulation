@@ -134,7 +134,7 @@ def process_item(imgs, item):
     x1, y1 = max(mar, x1), max(mar, y1)
     x2, y2 = min(rgb.shape[1] - mar, x2), min(rgb.shape[0] - mar, y2)
     boxMin = np.array((x1 - mar, y1 - mar))
-    x1, y1, x2, y2 = np.int0((x1, y1, x2, y2))
+    x1, y1, x2, y2 = np.int32((x1, y1, x2, y2))
 
     boxCenter = (y2 + y1) // 2, (x2 + x1) // 2
     color = get_lego_color(boxCenter, rgb)
@@ -244,11 +244,11 @@ def process_item(imgs, item):
     l_box = cv.boxPoints((l_center, l_size, l_angle))
 
     if l_size[0] <= 3 or l_size[1] <= 3:
-        cv.drawContours(img_draw, np.int0([l_box]), 0, (0, 0, 0), 2)
+        cv.drawContours(img_draw, np.int32([l_box]), 0, (0, 0, 0), 2)
         return None  # filter out artifacts
 
     if a_show:
-        cv.drawContours(img_draw, np.int0([l_box]), 0, color, 2)
+        cv.drawContours(img_draw, np.int32([l_box]), 0, color, 2)
 
     # silouette distorption
     # get vertexs distance from origin
@@ -275,8 +275,8 @@ def process_item(imgs, item):
     l_center = (top_box[0] + top_box[2]) / 2
 
     if a_show:
-        cv.drawContours(img_draw, np.int0([top_box]), 0, (5, 5, 5), 2)
-        cv.circle(img_draw, np.int0(top_box[iver]), 1, (0, 0, 255), 1, cv.LINE_AA)
+        cv.drawContours(img_draw, np.int32([top_box]), 0, (5, 5, 5), 2)
+        cv.circle(img_draw, np.int32(top_box[iver]), 1, (0, 0, 255), 1, cv.LINE_AA)
 
     # rotation and axis drawing
     if or_nm in (
@@ -327,14 +327,14 @@ def process_item(imgs, item):
             dirY = np.array((*dirY, 0))
             dirX = np.cross(dirZ, dirY)
             if a_show:
-                cv.circle(img_draw, np.int0(edgePin[iverFar]), 5, (70, 10, 50), 1)
+                cv.circle(img_draw, np.int32(edgePin[iverFar]), 5, (70, 10, 50), 1)
             # cv.line(img_draw, np.int0(l_center), np.int0(l_center+np.array([int(vx*100),int(vy*100)])),(0,0,255), 3)
         if ax == 1:
             dirY = np.array((0, 0, 1))
             dirX = np.cross(dirZ, dirY)
 
         if a_show:
-            cv.line(img_draw, *np.int0(edgePin), (255, 255, 0), 2)
+            cv.line(img_draw, *np.int32(edgePin), (255, 255, 0), 2)
 
     l_center = point_inverse_distortption(l_center, l_height)
 
@@ -361,18 +361,18 @@ def process_item(imgs, item):
         unit_z = 0.031
         unit_x = 22 * 0.8039 / dist_tavolo
         x_to_z = lenFrame * unit_z / unit_x
-        center = np.int0(l_center)
+        center = np.int32(l_center)
 
         origin_from_top = origin - l_center
 
         endX = point_distorption(lenFrame * dirX[:2], x_to_z * dirX[2], origin_from_top)
-        frameX = (center, center + np.int0(endX))
+        frameX = (center, center + np.int32(endX))
 
         endY = point_distorption(lenFrame * dirY[:2], x_to_z * dirY[2], origin_from_top)
-        frameY = (center, center + np.int0(endY))
+        frameY = (center, center + np.int32(endY))
 
         endZ = point_distorption(lenFrame * dirZ[:2], x_to_z * dirZ[2], origin_from_top)
-        frameZ = (center, center + np.int0(endZ))
+        frameZ = (center, center + np.int32(endZ))
 
         cv.line(img_draw, *frameX, (0, 0, 255), 2)
         cv.line(img_draw, *frameY, (0, 255, 0), 2)
@@ -479,7 +479,8 @@ def process_image(rgb, depth):
         sound_file = path.join(
             path_sounds, "success.wav"
         )  # Assuming you have a success.wav
-        os.system(f"paplay {sound_file}")
+        if path.exists(sound_file):
+            os.system(f"paplay {sound_file}")
 
     if a_show:
         cv.imshow("vision-results.png", img_draw)

@@ -43,7 +43,7 @@ Not searching for unused variables given on the command line.
 [36m--[0m Checking for module 'bullet>=2.82'
 [36m--[0m   Found bullet, version 2.88
 [36m--[0m Found ccd: /usr/include (found suitable version "2.0", minimum required is "2.0")
-[36m--[0m Found fcl: /usr/include (found suitable version "0.5.0", minimum required is "0.3.2")
+[36m--[0m Found fcl: /opt/ros/noetic/include (found suitable version "0.6.1", minimum required is "0.3.2")
 [36m--[0m Found assimp: /usr/include (found version "5.0.0")
 [36m--[0m Found DART: /usr/include (Required is at least version "6.6") found components: dart
 [36m--[0m Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found suitable version "1.71.0", minimum required is "1.40.0") found components: thread system filesystem program_options regex iostreams date_time

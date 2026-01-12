@@ -30,7 +30,6 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/gazebo-11"
   "/usr/include/bullet"
@@ -39,6 +38,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/OGRE/Terrain"
   "/usr/include/OGRE/Paging"
   "/root/catkin_ws/src/robot/robotiq/robotiq_gazebo/include"
+  "/opt/ros/noetic/include"
   "/usr/include/simbody"
   "/usr/include/ignition/math6"
   "/usr/include/ignition/transport8"

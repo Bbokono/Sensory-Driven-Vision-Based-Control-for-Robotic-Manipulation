@@ -18,9 +18,12 @@ if [[ "$(docker images -q ur5_sim 2> /dev/null)" == "" ]]; then
   docker build -t ur5_sim "$PROJECT_ROOT"
 fi
 
+# Ensure scripts are executable
+chmod +x "$CATKIN_WS_DIR/src/motion_planning/scripts/spawn_obstacle.py" 2>/dev/null || true
+
 # Allow Docker to connect to the X server
 xhost +
-
+ 
 # Check for existing container status
 if docker container inspect ur5_container >/dev/null 2>&1; then
   STATUS=$(docker inspect -f '{{.State.Status}}' ur5_container)
@@ -47,6 +50,9 @@ if docker container inspect ur5_container >/dev/null 2>&1; then
       echo ""
       echo "Terminal 4 (Motion Planning):"
       echo "docker exec -it -e DISPLAY=\$DISPLAY ur5_container bash -c 'source /root/catkin_ws/devel/setup.bash && rosrun motion_planning motion_planning.py'"
+      echo ""
+      echo "Terminal 5 (Spawn Obstacle):"
+      echo "docker exec -it -e DISPLAY=\$DISPLAY ur5_container bash -c 'source /root/catkin_ws/devel/setup.bash && rosrun motion_planning spawn_obstacle.py'"
       # Exit to avoid rebuilding
       exit 0
     fi
@@ -86,6 +92,8 @@ docker exec -it ur5_container /bin/bash -c '
       ros-noetic-gazebo-ros-control \
       ros-noetic-ros-control \
       ros-noetic-ros-controllers \
+      ros-noetic-moveit \
+      ros-noetic-moveit-commander \
       python3-pip \
       libgazebo11-dev \
       ros-noetic-rqt-image-view \
@@ -103,12 +111,13 @@ docker exec -it ur5_container /bin/bash -c '
 
   echo "Installing Python packages..."
   python3 -m pip install --upgrade pip
-  python3 -m pip install --upgrade importlib-metadata setuptools
+  python3 -m pip install --upgrade importlib-metadata setuptools packaging
   python3 -m pip install --ignore-installed psutil
   python3 -m pip install \
       pandas \
       pyquaternion \
       requests \
+      urllib3 \
       seaborn \
       "networkx<3.0" \
       ultralytics \
@@ -129,6 +138,7 @@ docker exec -it ur5_container /bin/bash -c '
     git clone https://github.com/ultralytics/yolov5.git
   fi
   cd yolov5
+  git checkout v7.0
   python3 -m pip install -r requirements.txt
 '
 
@@ -147,3 +157,6 @@ echo "docker exec -it -e DISPLAY=\$DISPLAY ur5_container bash -c 'source /root/c
 echo ""
 echo "Terminal 4 (Motion Planning):"
 echo "docker exec -it -e DISPLAY=\$DISPLAY ur5_container bash -c 'source /root/catkin_ws/devel/setup.bash && rosrun motion_planning motion_planning.py'"
+echo ""
+echo "Terminal 5 (Spawn Obstacle):"
+echo "docker exec -it -e DISPLAY=\$DISPLAY ur5_container bash -c 'source /root/catkin_ws/devel/setup.bash && rosrun motion_planning spawn_obstacle.py'"
