@@ -10,6 +10,7 @@ The system consists of four main components:
 2.  **Level Manager**: Spawns Lego bricks in random or predefined configurations on the table.
 3.  **Vision Node**: Uses a camera sensor and YOLOv5 to detect Lego bricks, classify them, and estimate their pose (position and orientation).
 4.  **Motion Planning**: Controls the UR5 arm to pick up detected bricks and stack them according to a build plan.
+5.  **Obstacles**: Optional spawning of obstacles to test dynamic path planning.
 
 ## Prerequisites
 
@@ -46,9 +47,14 @@ The entire environment is containerized using Docker. A helper script is provide
 
 ## Running the Simulation
 
-Once the setup script completes, it will output instructions on how to run the individual components. You will need **four separate terminal windows**.
+Once the setup script completes, it will output instructions on how to run the individual components. You will need **up to five separate terminal windows**.
 
 For each terminal, first connect to the running container:
+
+```bash
+docker start ur5_container
+ xhost +local:root
+```
 
 ```bash
 docker exec -it -e DISPLAY=$DISPLAY ur5_container bash
@@ -73,7 +79,6 @@ Spawns the Lego bricks. You can choose a level (1-4).
 
 ```bash
 source /root/catkin_ws/devel/setup.bash
-rosservice call /gazebo/unpause_physics
 rosrun levelManager levelManager.py -l 1
 ```
 
@@ -81,7 +86,17 @@ rosrun levelManager levelManager.py -l 1
 - `-l 2`: Spawns all brick types.
 - `-l 4`: Spawns bricks for a specific construction.
 
-### Terminal 3: Vision Node
+### Terminal 3: Motion Planning
+
+Starts the robot controller to pick and place bricks. Note: Run this **before** the vision node so it is ready to receive detections.
+
+```bash
+source /root/catkin_ws/devel/setup.bash
+rosservice call /gazebo/unpause_physics
+rosrun motion_planning motion_planning.py
+```
+
+### Terminal 4: Vision Node
 
 Starts the computer vision processing.
 
@@ -90,15 +105,15 @@ source /root/catkin_ws/devel/setup.bash
 rosrun vision lego-vision.py -show
 ```
 
-- `-show`: Displays a window with the camera feed and detection overlays.
+    `-show`: Displays a window with the camera feed and detection overlays.
 
-### Terminal 4: Motion Planning
+### Terminal 5: Spawn Obstacles (Optional)
 
-Starts the robot controller to pick and place bricks.
+To test path planning capabilities, spawn a static obstacle in the workspace.
 
 ```bash
 source /root/catkin_ws/devel/setup.bash
-rosrun motion_planning motion_planning.py
+rosrun motion_planning spawn_obstacle.py
 ```
 
 ## Troubleshooting
