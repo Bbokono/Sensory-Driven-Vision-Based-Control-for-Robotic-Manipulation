@@ -6,7 +6,7 @@ import copy
 import json
 import actionlib
 import control_msgs.msg
-from controller import ArmController, MoveItArmController, VelocityArmController
+from controller import ArmController
 from gazebo_msgs.msg import ModelStates
 import rospy
 from pyquaternion import Quaternion as PyQuaternion
@@ -344,8 +344,7 @@ if __name__ == "__main__":
     rospy.init_node("send_joints")
 
     # Use MoveIt controller to handle obstacles
-    # controller = MoveItArmController()
-    controller = VelocityArmController()
+    controller = ArmController()
 
     # Create an action client for the gripper
     action_gripper = actionlib.SimpleActionClient(

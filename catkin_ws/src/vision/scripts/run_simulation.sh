@@ -140,6 +140,11 @@ docker exec -it ur5_container /bin/bash -c '
   cd yolov5
   git checkout v7.0
   python3 -m pip install -r requirements.txt
+
+  echo "Disabling Ignition Fuel download to prevent timeouts..."
+  mkdir -p ~/.ignition/fuel
+  echo "---" > ~/.ignition/fuel/config.yaml
+  echo "servers: []" >> ~/.ignition/fuel/config.yaml
 '
 
 echo "--- Setup Complete ---"

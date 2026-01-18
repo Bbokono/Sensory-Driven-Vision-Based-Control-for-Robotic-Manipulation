@@ -79,8 +79,8 @@ CMakeFiles/ur_msgs_generate_messages_py: /root/catkin_ws/devel/.private/ur_msgs/
 
 /root/catkin_ws/devel/.private/ur_msgs/lib/python3/dist-packages/ur_msgs/msg/_IOStates.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /root/catkin_ws/devel/.private/ur_msgs/lib/python3/dist-packages/ur_msgs/msg/_IOStates.py: /root/catkin_ws/src/robot/universal_robot/ur_msgs/msg/IOStates.msg
-/root/catkin_ws/devel/.private/ur_msgs/lib/python3/dist-packages/ur_msgs/msg/_IOStates.py: /root/catkin_ws/src/robot/universal_robot/ur_msgs/msg/Digital.msg
 /root/catkin_ws/devel/.private/ur_msgs/lib/python3/dist-packages/ur_msgs/msg/_IOStates.py: /root/catkin_ws/src/robot/universal_robot/ur_msgs/msg/Analog.msg
+/root/catkin_ws/devel/.private/ur_msgs/lib/python3/dist-packages/ur_msgs/msg/_IOStates.py: /root/catkin_ws/src/robot/universal_robot/ur_msgs/msg/Digital.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/root/catkin_ws/build/ur_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating Python from MSG ur_msgs/IOStates"
 	catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /root/catkin_ws/src/robot/universal_robot/ur_msgs/msg/IOStates.msg -Iur_msgs:/root/catkin_ws/src/robot/universal_robot/ur_msgs/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p ur_msgs -o /root/catkin_ws/devel/.private/ur_msgs/lib/python3/dist-packages/ur_msgs/msg
 
