@@ -10,6 +10,8 @@ from pyquaternion import Quaternion
 import pandas as pd
 import datetime
 import time
+from std_msgs.msg import Float64MultiArray
+from controller_manager_msgs.srv import SwitchController
 
 # Force update check
 rospy.loginfo("Loading controller module...")
@@ -217,3 +219,44 @@ class ArmController:
                         break
                     return
         rospy.logwarn("Timeout waiting for position")
+
+
+class MPCController:
+    def __init__(self, velocity_topic="/joint_group_vel_controller/command"):
+        self.velocity_topic = velocity_topic
+        self.vel_pub = rospy.Publisher(
+            self.velocity_topic, Float64MultiArray, queue_size=1
+        )
+        self.switch_srv = rospy.ServiceProxy(
+            "/controller_manager/switch_controller", SwitchController
+        )
+
+    def switch_to_mpc(self):
+        """Switches from trajectory controller to velocity controller"""
+        try:
+            self.switch_srv(
+                start_controllers=["joint_group_vel_controller"],
+                stop_controllers=["trajectory_controller"],
+                strictness=1,
+            )
+            rospy.loginfo("Switched to MPC (Velocity Control)")
+        except rospy.ServiceException as e:
+            rospy.logerr(f"Service call failed: {e}")
+
+    def switch_to_arm_controller(self):
+        """Switches back to standard trajectory controller"""
+        try:
+            self.switch_srv(
+                start_controllers=["trajectory_controller"],
+                stop_controllers=["joint_group_vel_controller"],
+                strictness=1,
+            )
+            rospy.loginfo("Switched to ArmController (Trajectory Control)")
+        except rospy.ServiceException as e:
+            rospy.logerr(f"Service call failed: {e}")
+
+    def stop(self):
+        """Sends zero velocity to stop the robot"""
+        msg = Float64MultiArray()
+        msg.data = [0.0] * 6
+        self.vel_pub.publish(msg)

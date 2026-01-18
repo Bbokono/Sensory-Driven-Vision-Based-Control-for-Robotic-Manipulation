@@ -77,7 +77,7 @@ def get_gazebo_model_name(model_name, vision_model_pose):
     Get the name of the model inside gazebo. It is needed for link attacher plugin.
     """
     models = rospy.wait_for_message("/gazebo/model_states", ModelStates, timeout=None)
-    epsilon = 0.05
+    epsilon = 0.1
     for gazebo_model_name, model_pose in zip(models.name, models.pose):
         # Robust check to ensure we match the exact model class (e.g. avoid matching X1-Y2-Z2 inside X1-Y2-Z2-CHAMFER)
         clean_name = gazebo_model_name.replace("lego_", "")
@@ -119,9 +119,23 @@ def get_legos_pos(vision=False):
 
             legos.name.append(name)
             legos.pose.append(pose)
-    return [
-        (lego_name, lego_pose) for lego_name, lego_pose in zip(legos.name, legos.pose)
-    ]
+
+    # Filter duplicates to prevent processing the same brick twice
+    unique_legos = []
+    for name, pose in zip(legos.name, legos.pose):
+        is_duplicate = False
+        for u_name, u_pose in unique_legos:
+            if name == u_name:
+                dist = math.sqrt(
+                    (pose.position.x - u_pose.position.x) ** 2
+                    + (pose.position.y - u_pose.position.y) ** 2
+                )
+                if dist < 0.05:
+                    is_duplicate = True
+                    break
+        if not is_duplicate:
+            unique_legos.append((name, pose))
+    return unique_legos
 
 
 def straighten(model_pose, gazebo_model_name):
@@ -340,7 +354,7 @@ def set_gripper(value):
     goal = control_msgs.msg.GripperCommandGoal()
     goal.command.position = value  # From 0.0 to 0.8
     goal.command.max_effort = -1  # # Do not limit the effort
-    action_gripper.send_goal_and_wait(goal, rospy.Duration(10))
+    action_gripper.send_goal_and_wait(goal, rospy.Duration(20))
 
     return action_gripper.get_result()
 
