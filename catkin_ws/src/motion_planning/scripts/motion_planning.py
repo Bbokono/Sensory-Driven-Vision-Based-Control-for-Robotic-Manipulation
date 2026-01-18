@@ -79,7 +79,13 @@ def get_gazebo_model_name(model_name, vision_model_pose):
     models = rospy.wait_for_message("/gazebo/model_states", ModelStates, timeout=None)
     epsilon = 0.05
     for gazebo_model_name, model_pose in zip(models.name, models.pose):
-        if model_name not in gazebo_model_name:
+        # Robust check to ensure we match the exact model class (e.g. avoid matching X1-Y2-Z2 inside X1-Y2-Z2-CHAMFER)
+        clean_name = gazebo_model_name.replace("lego_", "")
+        if not clean_name.startswith(model_name):
+            continue
+
+        suffix = clean_name[len(model_name) :]
+        if suffix and not suffix.startswith("_"):
             continue
         # Get everything inside a square of side epsilon centered in vision_model_pose
         ds = abs(model_pose.position.x - vision_model_pose.position.x) + abs(
@@ -414,3 +420,4 @@ if __name__ == "__main__":
     controller.move_to(*DEFAULT_POS, DEFAULT_QUAT)
     open_gripper()
     rospy.sleep(0.4)
+    controller.save_logs()

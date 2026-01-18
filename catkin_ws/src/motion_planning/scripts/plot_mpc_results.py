@@ -7,13 +7,17 @@ import sys
 
 
 def plot_latest():
-    # Find the most recent CSV file in the workspace
-    list_of_files = glob.glob("/root/catkin_ws/mpc_results_*.csv")
-    if not list_of_files:
-        print("No MPC result files found in /root/catkin_ws/")
-        return
+    if len(sys.argv) > 1:
+        latest_file = sys.argv[1]
+    else:
+        # Find the most recent CSV file in the workspace
+        list_of_files = glob.glob("/root/catkin_ws/performance_results_*.csv")
+        if not list_of_files:
+            print("No MPC result files found in /root/catkin_ws/")
+            return
 
-    latest_file = max(list_of_files, key=os.path.getctime)
+        latest_file = max(list_of_files, key=os.path.getctime)
+
     print(f"Processing data from: {latest_file}")
 
     df = pd.read_csv(latest_file)
@@ -24,7 +28,7 @@ def plot_latest():
     # Create a 2x2 grid of plots
     fig, axs = plt.subplots(2, 2, figsize=(15, 10))
     fig.suptitle(
-        f"MPC Controller Performance Analysis\n{os.path.basename(latest_file)}",
+        f"Controller Performance Analysis\n{os.path.basename(latest_file)}",
         fontsize=16,
     )
 
@@ -45,9 +49,10 @@ def plot_latest():
     axs[0, 1].plot(
         df["time"], df["error_dist"], label="Position Error (m)", linewidth=2
     )
-    axs[0, 1].plot(
-        df["time"], df["error_orient"], label="Orientation Error", linewidth=2
-    )
+    if "error_orient" in df.columns:
+        axs[0, 1].plot(
+            df["time"], df["error_orient"], label="Orientation Error", linewidth=2
+        )
     axs[0, 1].set_title("Error Convergence")
     axs[0, 1].set_xlabel("Time (s)")
     axs[0, 1].set_ylabel("Error Magnitude")
@@ -57,7 +62,8 @@ def plot_latest():
 
     # 3. Control Inputs (Joint Velocities)
     for i in range(1, 7):
-        axs[1, 0].plot(df["time"], df[f"v{i}"], label=f"Joint {i}")
+        if f"v{i}" in df.columns:
+            axs[1, 0].plot(df["time"], df[f"v{i}"], label=f"Joint {i}")
     axs[1, 0].set_title("Control Effort (Joint Velocities)")
     axs[1, 0].set_xlabel("Time (s)")
     axs[1, 0].set_ylabel("Velocity (rad/s)")
@@ -72,7 +78,9 @@ def plot_latest():
     axs[1, 1].grid(True)
 
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.show()
+    output_file = os.path.splitext(latest_file)[0] + ".png"
+    plt.savefig(output_file)
+    print(f"Plot saved to: {output_file}")
 
 
 if __name__ == "__main__":

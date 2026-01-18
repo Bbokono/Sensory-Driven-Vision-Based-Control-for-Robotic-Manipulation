@@ -74,6 +74,7 @@ class ArmController:
             filename = f"/root/catkin_ws/performance_results_{timestamp}.csv"
             df.to_csv(filename, index=False)
             rospy.loginfo(f"Performance Data saved to {filename}")
+            self.log_data = []
         except Exception as e:
             rospy.logerr(f"Failed to save logs: {e}")
 
@@ -143,7 +144,7 @@ class ArmController:
             )
             comp_time = time.time() - t_start
 
-            self._record_state(tx, ty, tz, comp_time)
+            self._record_state(tx, ty, tz, grip, comp_time)
             rospy.sleep(1 / speed)
 
         if blocking:
@@ -151,12 +152,14 @@ class ArmController:
 
         self.gripper_pose = (x, y, z), target_quat
 
-    def _record_state(self, tx, ty, tz, comp_time=0.0):
+    def _record_state(self, tx, ty, tz, target_quat, comp_time=0.0):
         if self.current_joint_state:
             try:
-                ax, ay, az, _ = kinematics.get_pose(
+                ax, ay, az, rot = kinematics.get_pose(
                     self.current_joint_state.actual.positions
                 )
+                actual_quat = Quaternion(matrix=rot)
+                error_orient = Quaternion.distance(target_quat, actual_quat)
 
                 data = {
                     "time": rospy.Time.now().to_sec(),
@@ -169,6 +172,7 @@ class ArmController:
                     "error_dist": np.sqrt(
                         (tx - ax) ** 2 + (ty - ay) ** 2 + (tz - az) ** 2
                     ),
+                    "error_orient": error_orient,
                     "computation_time": comp_time,
                 }
 
