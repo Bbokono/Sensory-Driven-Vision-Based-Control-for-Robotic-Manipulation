@@ -6,7 +6,7 @@ import copy
 import json
 import actionlib
 import control_msgs.msg
-from controller import ArmController
+from controller import ArmController, MPCController
 from gazebo_msgs.msg import ModelStates
 import rospy
 from pyquaternion import Quaternion as PyQuaternion
@@ -365,6 +365,7 @@ if __name__ == "__main__":
 
     # Use MoveIt controller to handle obstacles
     controller = ArmController()
+    mpc_controller = MPCController()
 
     # Create an action client for the gripper
     action_gripper = actionlib.SimpleActionClient(
@@ -399,6 +400,8 @@ if __name__ == "__main__":
         # Get actual model_name at model xyz coordinates
         try:
             gazebo_model_name = get_gazebo_model_name(model_name, model_pose)
+        except rospy.exceptions.ROSInterruptException:
+            break
         except ValueError as e:
             print(e)
             continue
@@ -414,11 +417,30 @@ if __name__ == "__main__":
         z += model_size[2] / 2 + 0.004
         print(f"Moving model {model_name} to {x} {y} {z}")
 
+        # 1. Move above target using standard controller (for obstacle avoidance)
         controller.move_to(
             x,
             y,
+            z + 0.2,  # Safe height
             target_quat=DEFAULT_QUAT * PyQuaternion(axis=[0, 0, 1], angle=math.pi / 2),
         )
+
+        # 2. PRECISION APPROACH USING MPC
+        rospy.loginfo("Starting MPC precision approach...")
+        current_z = controller.gripper_pose[0][2]
+        target_quat = DEFAULT_QUAT * PyQuaternion(axis=[0, 0, 1], angle=math.pi / 2)
+
+        mpc_success = mpc_controller.move_to_mpc(
+            x, y, current_z, target_quat, duration=8.0, tolerance=0.002
+        )
+
+        if mpc_success:
+            rospy.loginfo("MPC approach successful!")
+        else:
+            rospy.logwarn("MPC approach had issues, continuing...")
+
+        controller.sync_state()
+
         # Lower the object and release
         controller.move_to(x, y, z)
         set_model_fixed(gazebo_model_name)
@@ -435,3 +457,4 @@ if __name__ == "__main__":
     open_gripper()
     rospy.sleep(0.4)
     controller.save_logs()
+    mpc_controller.save_logs()

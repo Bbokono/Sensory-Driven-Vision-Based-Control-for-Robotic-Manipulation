@@ -12,6 +12,7 @@ import datetime
 import time
 from std_msgs.msg import Float64MultiArray
 from controller_manager_msgs.srv import SwitchController
+import sensor_msgs.msg
 
 # Force update check
 rospy.loginfo("Loading controller module...")
@@ -73,7 +74,7 @@ class ArmController:
         try:
             df = pd.DataFrame(self.log_data)
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"/root/catkin_ws/performance_results_{timestamp}.csv"
+            filename = f"/root/catkin_ws/performance_results_arm_{timestamp}.csv"
             df.to_csv(filename, index=False)
             rospy.loginfo(f"Performance Data saved to {filename}")
             self.log_data = []
@@ -147,7 +148,10 @@ class ArmController:
             comp_time = time.time() - t_start
 
             self._record_state(tx, ty, tz, grip, comp_time)
-            rospy.sleep(1 / speed)
+            try:
+                rospy.sleep(1 / speed)
+            except rospy.exceptions.ROSInterruptException:
+                return
 
         if blocking:
             self.wait_for_position(tol_pos=0.005, tol_vel=0.08)
@@ -220,6 +224,14 @@ class ArmController:
                     return
         rospy.logwarn("Timeout waiting for position")
 
+    def sync_state(self):
+        """Updates the internal gripper pose from the actual robot state."""
+        if self.current_joint_state:
+            x, y, z, rot = kinematics.get_pose(
+                self.current_joint_state.actual.positions
+            )
+            self.gripper_pose = (x, y, z), Quaternion(matrix=rot)
+
 
 class MPCController:
     def __init__(self, velocity_topic="/joint_group_vel_controller/command"):
@@ -230,6 +242,37 @@ class MPCController:
         self.switch_srv = rospy.ServiceProxy(
             "/controller_manager/switch_controller", SwitchController
         )
+        self.joint_names = [
+            "shoulder_pan_joint",
+            "shoulder_lift_joint",
+            "elbow_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint",
+        ]
+        self.current_joints = None
+        self.state_sub = rospy.Subscriber(
+            "/joint_states", sensor_msgs.msg.JointState, self._state_cb
+        )
+        self.log_data = []
+        rospy.on_shutdown(self.save_logs)
+
+        # PID Gains for MPC
+        self.Kp = 15.0  # Increased for faster convergence
+        self.Ki = 1.5  # Increased to eliminate steady-state error (<2mm)
+        self.Kd = 0.6  # Adjusted to prevent overshoot with higher P
+
+        # State tracking
+        self.integral_error = np.zeros(6)
+        self.prev_error = np.zeros(6)
+        self.prev_time = None
+
+    def _state_cb(self, msg):
+        try:
+            idxs = [msg.name.index(jn) for jn in self.joint_names]
+            self.current_joints = [msg.position[i] for i in idxs]
+        except ValueError:
+            pass
 
     def switch_to_mpc(self):
         """Switches from trajectory controller to velocity controller"""
@@ -239,7 +282,8 @@ class MPCController:
                 stop_controllers=["trajectory_controller"],
                 strictness=1,
             )
-            rospy.loginfo("Switched to MPC (Velocity Control)")
+            rospy.loginfo("[MPC] Switched to velocity control")
+            rospy.sleep(0.1)  # Brief pause for controller to activate
         except rospy.ServiceException as e:
             rospy.logerr(f"Service call failed: {e}")
 
@@ -251,7 +295,7 @@ class MPCController:
                 stop_controllers=["joint_group_vel_controller"],
                 strictness=1,
             )
-            rospy.loginfo("Switched to ArmController (Trajectory Control)")
+            rospy.loginfo("[MPC] Switched back to trajectory control")
         except rospy.ServiceException as e:
             rospy.logerr(f"Service call failed: {e}")
 
@@ -260,3 +304,149 @@ class MPCController:
         msg = Float64MultiArray()
         msg.data = [0.0] * 6
         self.vel_pub.publish(msg)
+
+    def save_logs(self):
+        if not self.log_data:
+            return
+        try:
+            df = pd.DataFrame(self.log_data)
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"/root/catkin_ws/performance_results_mpc_{timestamp}.csv"
+            df.to_csv(filename, index=False)
+            rospy.loginfo(f"MPC Performance Data saved to {filename}")
+            self.log_data = []
+        except Exception as e:
+            rospy.logerr(f"Failed to save MPC logs: {e}")
+
+    def _record_state(self, target_joints, vel):
+        if self.current_joints:
+            try:
+                ax, ay, az, rot = kinematics.get_pose(self.current_joints)
+                tx, ty, tz, _ = kinematics.get_pose(target_joints)
+
+                data = {
+                    "time": rospy.Time.now().to_sec(),
+                    "target_x": tx,
+                    "target_y": ty,
+                    "target_z": tz,
+                    "actual_x": ax,
+                    "actual_y": ay,
+                    "actual_z": az,
+                    "error_x": tx - ax,
+                    "error_y": ty - ay,
+                    "error_z": tz - az,
+                    "error_norm": np.sqrt(
+                        (tx - ax) ** 2 + (ty - ay) ** 2 + (tz - az) ** 2
+                    ),
+                }
+                # Add joint velocities
+                for i, v in enumerate(vel[:6]):
+                    data[f"joint_vel_{i+1}"] = v
+
+                self.log_data.append(data)
+            except Exception as e:
+                rospy.logwarn(f"Failed to record MPC state: {e}")
+
+    def move_to_mpc(self, x, y, z, target_quat, duration=3.0, tolerance=0.005):
+        """Executes a move using MPC velocity control"""
+        self.switch_to_mpc()
+
+        # Reset PID states
+        self.integral_error = np.zeros(6)
+        self.prev_error = np.zeros(6)
+        self.prev_time = rospy.Time.now()
+
+        # Get target joints
+        target_joints = kinematics.get_joints(x, y, z, target_quat.rotation_matrix)
+        if target_joints is None:
+            rospy.logerr("[MPC] No IK solution found")
+            self.switch_to_arm_controller()
+            return False
+
+        rospy.loginfo(f"[MPC] Moving to target: ({x:.3f}, {y:.3f}, {z:.3f})")
+
+        rate = rospy.Rate(100)
+        start_time = rospy.Time.now()
+        success = False
+
+        while (rospy.Time.now() - start_time).to_sec() < duration:
+            if self.current_joints is None:
+                rate.sleep()
+                continue
+
+            # Calculate time step
+            current_time = rospy.Time.now()
+            dt = (current_time - self.prev_time).to_sec()
+            if dt <= 0:
+                dt = 0.01
+            self.prev_time = current_time
+
+            # PID Control
+            error = np.array(target_joints) - np.array(self.current_joints)
+
+            # Handle joint wrapping (-pi to pi)
+            for i in range(len(error)):
+                while error[i] > np.pi:
+                    error[i] -= 2 * np.pi
+                while error[i] < -np.pi:
+                    error[i] += 2 * np.pi
+
+            # Check if target reached
+            error_norm = np.linalg.norm(error)
+            if error_norm < tolerance:
+                rospy.loginfo(f"[MPC] Target reached with error: {error_norm:.4f}")
+                success = True
+                break
+
+            # PID Control
+            # Proportional
+            p_term = self.Kp * error
+
+            # Integral (with anti-windup)
+            self.integral_error += error * dt
+            # Clamp integral term
+            max_integral = 1.0
+            self.integral_error = np.clip(
+                self.integral_error, -max_integral, max_integral
+            )
+            i_term = self.Ki * self.integral_error
+
+            # Derivative
+            derivative = (error - self.prev_error) / dt if dt > 0 else np.zeros(6)
+            d_term = self.Kd * derivative
+            prev_error = error
+
+            # Combine terms
+            vel = p_term + i_term + d_term
+
+            # Velocity limits (UR5 safe limits)
+            vel = np.clip(vel, -1.5, 1.5)
+
+            # Publish velocity command
+            msg = Float64MultiArray()
+            msg.data = vel.tolist()
+            self.vel_pub.publish(msg)
+
+            # Record state for logging
+            self._record_state(target_joints, vel)
+
+            # Log progress every second
+            if int((current_time - start_time).to_sec()) != int(
+                (self.prev_time - start_time).to_sec()
+            ):
+                rospy.loginfo(f"[MPC] Progress: Error norm = {error_norm:.4f}")
+
+            try:
+                rate.sleep()
+            except rospy.exceptions.ROSInterruptException:
+                rospy.loginfo("[MPC] Interrupted by user")
+                break
+
+        # Stop robot
+        self.stop()
+        self.switch_to_arm_controller()
+
+        if not success:
+            rospy.logwarn(f"[MPC] Timeout - final error: {error_norm:.4f}")
+
+        return success
