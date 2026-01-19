@@ -1,1 +1,0 @@
-/root/catkin_ws/devel/.private/vision/share/roseus/ros/vision/manifest.l

@@ -1,1 +1,0 @@
-/root/catkin_ws/devel/.private/robotiq_description/lib/pkgconfig/robotiq_description.pc

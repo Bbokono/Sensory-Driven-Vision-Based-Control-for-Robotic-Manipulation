@@ -1,1 +1,0 @@
-/root/catkin_ws/devel/.private/ur_driver/lib/python3/dist-packages/ur_driver/__init__.py
