@@ -1,0 +1,7 @@
+Symlinking /root/catkin_ws/devel/share/vision/cmake/vision-msg-paths.cmake
+Symlinking /root/catkin_ws/devel/share/vision/cmake/visionConfig.cmake
+Symlinking /root/catkin_ws/devel/share/vision/cmake/vision-msg-extras.cmake
+Symlinking /root/catkin_ws/devel/share/vision/cmake/visionConfig-version.cmake
+Symlinking /root/catkin_ws/devel/share/roseus/ros/vision/manifest.l
+Symlinking /root/catkin_ws/devel/lib/pkgconfig/vision.pc
+Symlinking /root/catkin_ws/devel/lib/python3/dist-packages/vision/__init__.py

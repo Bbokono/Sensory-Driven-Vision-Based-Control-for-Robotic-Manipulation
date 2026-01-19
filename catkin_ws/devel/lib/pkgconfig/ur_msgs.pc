@@ -1,0 +1,1 @@
+/root/catkin_ws/devel/.private/ur_msgs/lib/pkgconfig/ur_msgs.pc

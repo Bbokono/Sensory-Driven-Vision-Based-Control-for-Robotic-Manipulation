@@ -12,6 +12,18 @@ The system consists of four main components:
 4.  **Motion Planning**: Controls the UR5 arm to pick up detected bricks and stack them according to a build plan.
 5.  **Obstacles**: Optional spawning of obstacles to test dynamic path planning.
 
+### Simulation Environment & Demo
+
+<p align="center">
+  <img src="catkin_ws/src/results/simulation_environment.png" width="800" title="Simulation Environment">
+  <br>
+  <em>Figure 1: The Gazebo simulation environment featuring the UR5 robot, table, and Lego bricks.</em>
+  <br><br>
+  <img src="catkin_ws/src/results/simulation.gif" width="800" title="Simulation Demo">
+  <br>
+  <em>Figure 2: Pick-and-place execution using the hybrid control strategy.</em>
+</p>
+
 ## Prerequisites
 
 - **OS**: Ubuntu 20.04 (Focal Fossa) or compatible Linux distribution.
@@ -31,7 +43,6 @@ The entire environment is containerized using Docker. A helper script is provide
 
 2.  **Run the Simulation Script**:
     Navigate to the scripts directory and run the setup script. This script will:
-
     - Build the Docker image.
     - Start the container.
     - Install system dependencies (ROS Noetic, Gazebo, etc.).

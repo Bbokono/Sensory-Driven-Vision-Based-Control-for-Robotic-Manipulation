@@ -1,0 +1,27 @@
+[35m[1mScanning dependencies of target std_msgs_generate_messages_py[0m
+[  0%] Built target std_msgs_generate_messages_py
+[35m[1mScanning dependencies of target std_msgs_generate_messages_nodejs[0m
+[  0%] Built target std_msgs_generate_messages_nodejs
+[35m[1mScanning dependencies of target std_msgs_generate_messages_cpp[0m
+[  0%] Built target std_msgs_generate_messages_cpp
+[35m[1mScanning dependencies of target std_msgs_generate_messages_lisp[0m
+[  0%] Built target std_msgs_generate_messages_lisp
+[35m[1mScanning dependencies of target std_msgs_generate_messages_eus[0m
+[  0%] Built target std_msgs_generate_messages_eus
+[35m[1mScanning dependencies of target vision_generate_messages_py[0m
+[  0%] Built target vision_generate_messages_py
+[35m[1mScanning dependencies of target vision_generate_messages_nodejs[0m
+[  0%] Built target vision_generate_messages_nodejs
+[35m[1mScanning dependencies of target vision_generate_messages_cpp[0m
+[  0%] Built target vision_generate_messages_cpp
+[35m[1mScanning dependencies of target vision_generate_messages_lisp[0m
+[  0%] Built target vision_generate_messages_lisp
+[35m[1mScanning dependencies of target vision_generate_messages_eus[0m
+[100%] [34m[1mGenerating EusLisp manifest code for vision[0m
+WARNING: Package name "levelManager" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "robotName_description" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "levelManager" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "robotName_description" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[100%] Built target vision_generate_messages_eus
+[35m[1mScanning dependencies of target vision_generate_messages[0m
+[100%] Built target vision_generate_messages

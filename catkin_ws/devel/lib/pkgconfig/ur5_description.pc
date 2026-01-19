@@ -1,0 +1,1 @@
+/root/catkin_ws/devel/.private/ur5_description/lib/pkgconfig/ur5_description.pc
